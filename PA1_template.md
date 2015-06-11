@@ -1,23 +1,30 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 ## Loading and preprocessing the data
 
 The data is in a .zip file format and has to be extracted in the working directory.
 Then, the data can be read using the read.csv() function in R :
 
-```{R}
+
+```r
 activity <- read.csv("C:/GH/RepData_PeerAssessment1/activity/activity.csv")
 ```
 
 Here are the first few rows :    
 
-```{R}
+
+```r
 head(activity)
+```
+
+```
+##   steps       date interval
+## 1    NA 2012-10-01        0
+## 2    NA 2012-10-01        5
+## 3    NA 2012-10-01       10
+## 4    NA 2012-10-01       15
+## 5    NA 2012-10-01       20
+## 6    NA 2012-10-01       25
 ```
 ---
 
@@ -30,18 +37,28 @@ In the following part, the missing values will be ignored. We will first compute
 
 ## Computes a summary of the total number of steps taken each day
 
-```{R}
+
+```r
 by_day <- aggregate(steps ~ date, data = activity, sum)
 ```
 
 ## Plot using ggplot2
-```{R}
+
+```r
 library(ggplot2)
+```
+
+```
+## Warning: package 'ggplot2' was built under R version 3.1.3
+```
+
+```r
 ggplot(by_day, aes(steps)) + geom_histogram(fill = "steelblue2", colour = "steelblue4", 
     breaks = c(0, 5000, 10000, 15000, 20000, 25000)) + labs(y = expression("frequency")) + 
     labs(x = expression("number of steps per day")) + labs(title = expression("Fig 1"))
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
 ---
 The histogram seems to be bell-shaped with most of the values concentrated between 10,000 and 15,000 steps per day.
 
@@ -50,16 +67,26 @@ The histogram seems to be bell-shaped with most of the values concentrated betwe
 Calculate the mean and median of total number of steps taken per day:
 ## Mean 
 
-```{R}
+
+```r
 mean1<-mean(by_day$steps)
 mean1
 ```
 
+```
+## [1] 10766.19
+```
+
 ## Median 
 
-```{R}
+
+```r
 median1<-median(by_day$steps)
 median1
+```
+
+```
+## [1] 10765
 ```
 
 The mean and median are respectively 10766 and 10765 steps taken per day. The results confirm the bell-shaped distribution of the total number of steps taken per day. Indeed, median and mean are approximately equal and between 10,000 and 15,000 steps per day.
@@ -74,7 +101,8 @@ The same strategy as before will be operated, computing a summary (in this case 
 
 ## Computes a summary of the average by 5mn-interval across all days
 
-```{R}
+
+```r
 by_interval <- aggregate(steps ~ interval, data = activity, FUN = function(x) {
     mean(x, na.rm = TRUE)
 })
@@ -82,10 +110,13 @@ by_interval <- aggregate(steps ~ interval, data = activity, FUN = function(x) {
 
 ## Time series plot
 
-```{R}
+
+```r
 ggplot(by_interval, aes(interval, steps)) + geom_line(colour = "steelblue4", 
     lwd = 2) + labs(title = expression("Fig 2"))
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
 
 The plot shows a peek around the 800th interval.
 ________________________________________
@@ -94,16 +125,26 @@ Evaluate the maximum 5-minute interval:
 
 ## Maximum interval
 
-```{R}
+
+```r
 by_interval$interval[which.max(by_interval$steps)]
+```
+
+```
+## [1] 835
 ```
 
 The peak is attained for the 835th interval.
 
 ## Maximum value
 
-```{R}
+
+```r
 max(by_interval$steps)
+```
+
+```
+## [1] 206.1698
 ```
 
 The peak is 206 steps.
@@ -114,7 +155,8 @@ The peak is 206 steps.
 This part of the report is devoted to filling in the missing values in the dataset.
 1. Calculate the total number of missing values
 
-```{R}
+
+```r
 na<-sum(is.na(activity))
 rate<-paste(round(100*(na/nrow(activity)), 3), "%")
 ```
@@ -124,7 +166,8 @@ There are 2304 missing values in this dataset, which represent 13% of the total 
 2. Filling in the missing values using the mean of the specific 5-minutes interval
 As a strategy for filling in the missing values in the dataset, we will be using the mean of the specific 5-minute interval in which the observation is missing.
 
-```{R}
+
+```r
 for (i in 1:length(activity$steps)) {
     if (is.na(activity[i, 1])) {
         
@@ -144,49 +187,96 @@ for (i in 1:length(activity$steps)) {
 3. New dataset with the missing values filled in
 Here are the first and last few rows :
 
-```{R}
-head(activity)
-tail(activity)
 
+```r
+head(activity)
+```
+
+```
+##       steps       date interval
+## 1 1.7169811 2012-10-01        0
+## 2 0.3396226 2012-10-01        5
+## 3 0.1320755 2012-10-01       10
+## 4 0.1509434 2012-10-01       15
+## 5 0.0754717 2012-10-01       20
+## 6 2.0943396 2012-10-01       25
+```
+
+```r
+tail(activity)
+```
+
+```
+##           steps       date interval
+## 17563 2.6037736 2012-11-30     2330
+## 17564 4.6981132 2012-11-30     2335
+## 17565 3.3018868 2012-11-30     2340
+## 17566 0.6415094 2012-11-30     2345
+## 17567 0.2264151 2012-11-30     2350
+## 17568 1.0754717 2012-11-30     2355
 ```
 ________________________________________
 4. Histogram of the total number of steps taken each day - Mean and median of the total number of steps taken per day - Impact of the missing value imputing strategy
 .	Histogram of total number of steps taken per day (Fig 3)
 
-```{R}
+
+```r
 by_date <- aggregate(steps ~ date, data = activity, sum)
 
 library(ggplot2)
 ggplot(by_date, aes(steps)) + geom_histogram(fill = "steelblue2", colour = "steelblue4", 
     breaks = c(0, 5000, 10000, 15000, 20000, 25000)) + labs(y = expression("frequency")) + 
     labs(x = expression("number of steps per day")) + labs(title = expression("Fig 3"))
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-14-1.png) 
 
 The distribution doesn't seem to have changed with the values filled in.    
 
 Mean and median of the total number of steps taken per day
 
-```{R}
+
+```r
 mean2<-mean(by_date$steps)
 mean2
+```
 
+```
+## [1] 10766.19
+```
+
+```r
 median2<-median(by_date$steps)
 median2
+```
+
+```
+## [1] 10766.19
 ```
 The mean is 10766 and median 10766 steps taken per day.
 
 .	Differences between the first and the second sets of estimates
 ## Variation of the mean due to the missing value imputing strategy in percent
 
-```{R}
+
+```r
 delta_mean<-(mean1-mean2)/mean1
 paste(round(100*delta_mean, 4), "%")
+```
 
+```
+## [1] "0 %"
+```
+
+```r
 ## Variation of the mean due to the missing value imputing strategy in percent
 
 delta_median<-(median1-median2)/median1
 paste(round(100*delta_median, 4), "%")
+```
+
+```
+## [1] "-0.011 %"
 ```
 
 The variation of the mean and the median after imputing the missing values are respectively 0% and -0.011%. The difference between is small for this sample.
@@ -200,11 +290,31 @@ Differences in activity patterns between weekdays and weekends
 
 ## Converts the variable 'date' to POSIXct class
 
-```{R}
+
+```r
 activity$date <- strptime(activity$date, "%Y-%m-%d")
 
 library(dplyr)
+```
 
+```
+## Warning: package 'dplyr' was built under R version 3.1.3
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+## 
+## The following object is masked from 'package:stats':
+## 
+##     filter
+## 
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 ## Creates a new column with days of the week
 activity <- mutate(activity, day = weekdays(date))
 
@@ -223,8 +333,19 @@ activity$day <- as.factor(activity$day)
 
 Here are the first few rows of the dataset with the new factor variable:
 
-```{R}
+
+```r
 head(activity)
+```
+
+```
+##       steps       date interval     day
+## 1 1.7169811 2012-10-01        0 weekday
+## 2 0.3396226 2012-10-01        5 weekday
+## 3 0.1320755 2012-10-01       10 weekday
+## 4 0.1509434 2012-10-01       15 weekday
+## 5 0.0754717 2012-10-01       20 weekday
+## 6 2.0943396 2012-10-01       25 weekday
 ```
 
 2. Panel plot containing a time series plot of the 5-minute interval and the average number of steps taken, averaged across all weekday days or weekend days.(Fig 4)
@@ -232,7 +353,8 @@ head(activity)
 ## Computes a summary of the average number of steps taken across all weekday
 ## days and weekend days
 
-```{R}
+
+```r
 summary <- aggregate(activity$steps, list(interval = activity$interval, day = activity$day), 
     mean)
 names(summary) <- c("interval", "day", "steps")
@@ -241,6 +363,8 @@ names(summary) <- c("interval", "day", "steps")
 ggplot(summary, aes(interval, steps)) + geom_line(color = "steelblue4", lwd = 2) + 
     facet_wrap(~day, ncol = 1) + labs(title = expression("Fig 4"))
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-19-1.png) 
 
 There is a more activity during week-end time.
 

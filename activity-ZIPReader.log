@@ -1,0 +1,11 @@
+[6/10/2015 12:35:51 PM] ZIP Reader Version 14.00.0010 Build 1029
+[6/10/2015 12:35:52 PM] Loading C:\GH\RepData_PeerAssessment1\activity.zip
+	0 errors/warnings
+[6/10/2015 12:35:52 PM] Finished.
+[6/10/2015 12:35:52 PM] Extracting C:\GH\RepData_PeerAssessment1\activity.zip
+	Inflating C:\GH\RepData_PeerAssessment1\activity\activity.csv
+		CRC32 verified
+	Extracted 1 file(s)/folder(s)
+	Skipped 0 file(s)/folder(s)
+	0 errors/warnings
+[6/10/2015 12:35:58 PM] Finished.
